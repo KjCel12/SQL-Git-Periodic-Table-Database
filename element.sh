@@ -11,13 +11,14 @@ then
   exit
 fi
 
+#Fetching data
 ELEMENT_DATA=$($PSQL "SELECT e.atomic_number, name, symbol, t.type, atomic_mass, melting_point_celsius, boiling_point_celsius FROM elements e JOIN properties USING(atomic_number) JOIN types t USING(type_id) WHERE e.atomic_number::TEXT = '$1' OR symbol ILIKE '$1' OR name ILIKE '$1'")
 
 if [[ -z $ELEMENT_DATA ]]
 then
   echo "I could not find that element in the database."
 else
-  # 3. If it found something, read and print it
+  #If it found something, read and print it
   echo "$ELEMENT_DATA" | while IFS="|" read ATOMIC_NUMBER NAME SYMBOL TYPE MASS MELTING BOILING
   do
     echo "The element with atomic number $ATOMIC_NUMBER is $NAME ($SYMBOL). It's a $TYPE, with a mass of $MASS amu. $NAME has a melting point of $MELTING celsius and a boiling point of $BOILING celsius."
